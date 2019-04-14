@@ -38,16 +38,18 @@
 </style>
 
 <script>
+    import {mapGetters} from 'Vuex'
+
     export default {
-        data(){
+        data() {
             return {
                 remainder: 70.00
             }
         },
         computed: {
-            items(){
-                return this.$store.getters.getItems
-            }
+            ...mapGetters({
+                items: 'getItems'
+            })
         },
         methods: {
             addItem: function () {

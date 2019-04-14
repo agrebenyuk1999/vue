@@ -9,15 +9,20 @@
 </template>
 
 <script>
+    import {mapGetters} from 'Vuex'
+
     export default {
         computed: {
-            items(){
-                return this.$store.getters.getItems
-            }
+            ...mapGetters({
+                items: 'getItems'
+            })
         },
         methods: {
+
             addItem: function () {
+                // mapActions(['addItem', [this.name, this.price]])
                 // this.$store.commit('addItem', [this.name, this.price]);
+
                 this.$store.dispatch('addItem', [this.name, this.price])
                 alert('Продукт ' + this.name + ' с ценой ' + this.price + ' успешно добавлен')
             }
