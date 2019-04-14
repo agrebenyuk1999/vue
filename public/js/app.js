@@ -1781,11 +1781,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     addItem: function addItem() {
-      this.items.push({
-        name: this.name,
-        count: 0,
-        price: this.price
-      });
+      // this.$store.commit('addItem', [this.name, this.price]);
+      this.$store.dispatch('addItem', [this.name, this.price]);
       alert('Продукт ' + this.name + ' с ценой ' + this.price + ' успешно добавлен');
     }
   }
@@ -54257,6 +54254,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
@@ -54277,6 +54282,24 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
   getters: {
     getItems: function getItems(state) {
       return state.items;
+    }
+  },
+  actions: {
+    addItem: function addItem(context, items) {
+      context.commit('addItem', items);
+    }
+  },
+  mutations: {
+    addItem: function addItem(state, _ref) {
+      var _ref2 = _slicedToArray(_ref, 2),
+          name = _ref2[0],
+          price = _ref2[1];
+
+      state.items.push({
+        name: name,
+        count: 0,
+        price: price
+      });
     }
   }
 }));

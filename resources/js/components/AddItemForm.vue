@@ -17,11 +17,8 @@
         },
         methods: {
             addItem: function () {
-                this.items.push({
-                    name: this.name,
-                    count: 0,
-                    price: this.price,
-                })
+                // this.$store.commit('addItem', [this.name, this.price]);
+                this.$store.dispatch('addItem', [this.name, this.price])
                 alert('Продукт ' + this.name + ' с ценой ' + this.price + ' успешно добавлен')
             }
         }

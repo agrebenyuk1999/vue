@@ -21,5 +21,19 @@ export default new Vuex.Store({
     },
     getters: {
         getItems: state => state.items
+    },
+    actions: {
+        addItem(context, items){
+            context.commit('addItem', items)
+        }
+    },
+    mutations: {
+        addItem(state, [name, price]) {
+            state.items.push({
+                name: name,
+                count: 0,
+                price: price,
+            })
+        }
     }
 })
