@@ -8,8 +8,8 @@
         <section>
             <div class="row">
                 <div class="col-md-4 side__bar">
-                    <router-link to="/mainPage">Главная</router-link>
-                    <router-link to="/buy">Заказ</router-link>
+                    <router-link to="/">Главная</router-link>
+                    <router-link to="/add-item">Добавить продукт</router-link>
                 </div>
                 <div class="col-md-8 content">
                     <router-view></router-view>
@@ -20,9 +20,7 @@
 </template>
 
 <script>
-    export default {
 
-    }
 </script>
 
 <style>
@@ -54,7 +52,7 @@
     }
 
     section {
-        background: url("https://cdn.pixabay.com/photo/2018/04/20/18/19/grass-3336700_960_720.jpg");
+        background: #7EBA6F;
         background-size: 100%;
     }
 

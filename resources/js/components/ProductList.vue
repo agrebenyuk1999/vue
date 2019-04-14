@@ -25,11 +25,6 @@
                     </tr>
                     </tbody>
                 </table>
-                <form action="">
-                    <input type="text" placeholder="Наименование" v-model="name">
-                    <input type="text" placeholder="Цена" v-model="price">
-                    <button type="button" class="btn btn-primary" @click="addItem">Добавить</button>
-                </form>
             </div>
         </div>
     </div>
@@ -44,26 +39,14 @@
 
 <script>
     export default {
-        data: function () {
+        data(){
             return {
-                remainder: 70.00,
-                name: '',
-                price: '',
-                count: '',
-                items: [
-                    {
-                        name: 'Товар 1',
-                        count: 0,
-                        price: 30,
-                        showItem: false
-                    },
-                    {
-                        name: 'Товар 2',
-                        count: 0,
-                        price: 20,
-                        showItem: false
-                    }
-                ]
+                remainder: 70.00
+            }
+        },
+        computed: {
+            items(){
+                return this.$store.getters.getItems
             }
         },
         methods: {

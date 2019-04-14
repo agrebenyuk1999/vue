@@ -11,8 +11,11 @@ window.Vue = require('vue');
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import store from './store/store';
+// import Vuex from 'vuex';
 
 Vue.use( VueRouter );
+// Vue.use(Vuex);
 
 /**
  * The following block of code may be used to automatically register your
@@ -26,7 +29,6 @@ Vue.use( VueRouter );
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-Vue.component('calculation-table', require('./components/CalculationTableComponent.vue').default);
 Vue.component('layout', require('./components/Layout.vue').default);
 
 
@@ -37,21 +39,23 @@ Vue.component('layout', require('./components/Layout.vue').default);
  */
 
 
-const mainPage = Vue.component('mainPage', require('./components/Main.vue').default);
-const buy = Vue.component('buy', require('./components/Buy.vue').default);
+const productList = Vue.component('product-list', require('./components/ProductList.vue').default);
+const addItem = Vue.component('add-item', require('./components/AddItemForm.vue').default);
 
 const routes = [
-    { path: '/mainPage', component: mainPage },
-    { path: '/buy', component: buy }
+    { path: '/', component: productList },
+    { path: '/add-item', component: addItem },
+    // { path: '*', component: productList }
 ]
 
 
 const router = new VueRouter({
+    mode: 'history',
     routes
 })
 
-
 const app = new Vue({
     el: '#app',
-    router
+    router,
+    store
 })
