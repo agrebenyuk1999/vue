@@ -22,6 +22,7 @@
                     count: 0,
                     price: this.price,
                 })
+                alert('Продукт ' + this.name + ' с ценой ' + this.price + ' успешно добавлен')
             }
         }
     }
