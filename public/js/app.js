@@ -2799,15 +2799,32 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      name: '',
+      price: ''
+    };
+  },
   computed: _objectSpread({}, Object(Vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
     items: 'getItems'
   })),
   methods: {
     addItem: function addItem() {
-      // mapActions(['addItem', [this.name, this.price]])
+      axios.post('/add-product', {
+        name: this.name,
+        price: this.price
+      }).then(function (response) {
+        alert('Данные успешно добавлены');
+      })["catch"](function (error) {
+        console.log(error);
+      }); // mapActions(['addItem', [this.name, this.price]])
       // this.$store.commit('addItem', [this.name, this.price]);
-      this.$store.dispatch('addItem', [this.name, this.price]);
-      alert('Продукт ' + this.name + ' с ценой ' + this.price + ' успешно добавлен');
+      // if (this.name == '' || this.price == '') {
+      //     alert('Заполните все поля')
+      // } else {
+      //     this.$store.dispatch('addItem', [this.name, this.price])
+      //     alert('Продукт ' + this.name + ' с ценой ' + this.price + ' успешно добавлен')
+      // }
     }
   }
 });
@@ -2931,45 +2948,98 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      remainder: 70.00
+      remainder: 70.00,
+      lastUp: '',
+      is_refresh: false
     };
   },
   computed: _objectSpread({}, Object(Vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
     items: 'getItems'
   })),
   methods: {
-    addItem: function addItem() {
-      this.items.push({
-        name: this.name,
-        count: 0,
-        price: this.price
-      });
-    },
     addCountItem: function addCountItem(i) {
+      var _this = this;
+
+      this.is_refresh = true;
+
       if (this.remainder < this.items[i].price) {
         alert('кэш закончился, убейте пару драконов и получите за них несколько злотых');
       } else {
+        axios.post('/add-quantity', {
+          id: this.items[i].id
+        }).then(function (response) {
+          _this.items[i].quantity = response.data;
+          _this.is_refresh = false;
+        })["catch"](function (error) {
+          console.log(error);
+        });
         this.items[i].count++;
         this.remainder -= this.items[i].price;
+        this.getUpdateTime();
       }
     },
     destroyCountItem: function destroyCountItem(i) {
-      if (this.items[i].count === 0) {
-        this.items[i].count = 0;
+      var _this2 = this;
+
+      this.is_refresh = true;
+
+      if (this.items[i].quantity === 0) {
+        this.items[i].quantity = 0;
       } else {
-        this.items[i].count--;
+        axios.post('/take-away-quantity', {
+          id: this.items[i].id
+        }).then(function (response) {
+          _this2.items[i].quantity = response.data;
+          _this2.is_refresh = false;
+        })["catch"](function (error) {
+          console.log(error);
+        });
+        this.items[i].quantity--;
         this.remainder += this.items[i].price;
+        this.getUpdateTime();
       }
     },
     zeroingCountItem: function zeroingCountItem(i) {
-      var sum = this.items[i].count * this.items[i].price;
+      var _this3 = this;
+
+      this.is_refresh = true;
+      axios.post('/zeroing-quantity', {
+        id: this.items[i].id
+      }).then(function (response) {
+        _this3.items[i].quantity = response.data;
+        _this3.is_refresh = false;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+      var sum = this.items[i].quantity * this.items[i].price;
       this.remainder += sum;
-      this.items[i].count = 0;
+      this.getUpdateTime();
+    },
+    getUpdateTime: function getUpdateTime() {
+      var _this4 = this;
+
+      axios.get('/last-update').then(function (response) {
+        _this4.lastUp = response.data[0].updated_at;
+      });
     }
+  },
+  mounted: function mounted() {
+    this.getUpdateTime();
+  },
+  created: function created() {
+    var _this5 = this;
+
+    axios.get('/get-products').then(function (response) {
+      _this5.$store.dispatch('loadProducts', response.data);
+    });
   }
 });
 
@@ -38926,21 +38996,29 @@ var render = function() {
       _c("div", { staticClass: "col-md-8" }, [
         _c("h3", [_vm._v("Остаток: " + _vm._s(_vm.remainder))]),
         _vm._v(" "),
+        !_vm.is_refresh
+          ? _c("div", [_vm._v("Последнее обновление: " + _vm._s(_vm.lastUp))])
+          : _c("div", [_vm._v("Обновление...")]),
+        _vm._v(" "),
         _c("table", { staticClass: "table" }, [
           _vm._m(0),
           _vm._v(" "),
           _c(
             "tbody",
             _vm._l(_vm.items, function(item, i) {
-              return _c("tr", [
+              return _c("tr", { key: item.id }, [
+                _c("td", [_vm._v(_vm._s(item.id))]),
+                _vm._v(" "),
                 _c("td", [_vm._v(_vm._s(item.name))]),
                 _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(item.count))]),
+                _c("td", [_vm._v(_vm._s(item.quantity))]),
                 _vm._v(" "),
                 _c("td", [
                   _vm._v(
                     _vm._s(
-                      item.count === 0 ? item.price : item.price * item.count
+                      item.quantity === 0
+                        ? item.price
+                        : item.price * item.quantity
                     )
                   )
                 ]),
@@ -38989,6 +39067,8 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
+        _c("th", [_vm._v("ID in DataBase")]),
+        _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Имя")]),
         _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Количество")]),
@@ -55295,17 +55375,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
 /* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: {
-    items: [{
-      name: 'Товар 1',
-      count: 0,
-      price: 30,
-      showItem: false
-    }, {
-      name: 'Товар 2',
-      count: 0,
-      price: 20,
-      showItem: false
-    }]
+    items: ''
   },
   getters: {
     getItems: function getItems(state) {
@@ -55315,6 +55385,9 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
   actions: {
     addItem: function addItem(context, items) {
       context.commit('addItem', items);
+    },
+    loadProducts: function loadProducts(context, items) {
+      context.commit('loadProducts', items);
     }
   },
   mutations: {
@@ -55328,6 +55401,9 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
         count: 0,
         price: price
       });
+    },
+    loadProducts: function loadProducts(state, payload) {
+      state.items = payload;
     }
   }
 }));

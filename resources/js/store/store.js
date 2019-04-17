@@ -5,19 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        items: [
-            {
-                name: 'Товар 1',
-                count: 0,
-                price: 30,
-                showItem: false
-            },
-            {
-                name: 'Товар 2',
-                count: 0,
-                price: 20,
-                showItem: false
-            }]
+        items: ''
     },
     getters: {
         getItems: state => state.items
@@ -25,6 +13,9 @@ export default new Vuex.Store({
     actions: {
         addItem(context, items){
             context.commit('addItem', items)
+        },
+        loadProducts(context, items){
+            context.commit('loadProducts', items)
         }
     },
     mutations: {
@@ -34,6 +25,9 @@ export default new Vuex.Store({
                 count: 0,
                 price: price,
             })
+        },
+        loadProducts(state, payload){
+            state.items = payload
         }
     }
 })
